@@ -10,16 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Progress } from '@/components/ui/progress';
-import {
-  ShieldCheck,
-  ShieldAlert,
-  Camera,
-  FileText,
-  CheckCircle,
-  AlertTriangle,
-  Info,
-  Upload
-} from 'lucide-react';
+import { ShieldCheck, ShieldAlert, Camera, FileText, CircleCheck as CheckCircle, TriangleAlert as AlertTriangle, Info, Upload } from 'lucide-react';
 
 type Step = 'input' | 'analyzing' | 'results';
 
