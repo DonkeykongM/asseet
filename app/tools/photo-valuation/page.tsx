@@ -46,33 +46,59 @@ export default function PhotoValuation() {
     }
   }, [handleFileSelect]);
 
-  const startAnalysis = () => {
+  const startAnalysis = async () => {
+    if (!selectedFile) return;
+
     setStep('analyzing');
     setProgress(0);
-    
-    // Simulate analysis progress
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setStep('results');
-          setResults({
-            estimatedValue: '$2,400 - $3,200',
-            confidence: 85,
-            category: 'Vintage Watch',
-            condition: 'Good',
-            recommendations: [
-              'Consider professional authentication',
-              'Check for original box and papers',
-              'Have movement serviced for optimal value',
-              'Document provenance if available'
-            ]
-          });
-          return 100;
-        }
-        return prev + 10;
+
+    const progressInterval = setInterval(() => {
+      setProgress(prev => Math.min(prev + 5, 90));
+    }, 300);
+
+    try {
+      const reader = new FileReader();
+      const imageBase64 = await new Promise<string>((resolve) => {
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(selectedFile);
       });
-    }, 200);
+
+      const response = await fetch('/api/appraise', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          images: [imageBase64],
+          description: 'Quick photo valuation',
+          category: 'general',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Analysis failed');
+      }
+
+      const result = await response.json();
+      const aiData = result.data;
+
+      clearInterval(progressInterval);
+      setProgress(100);
+
+      setTimeout(() => {
+        setStep('results');
+        setResults({
+          estimatedValue: `$${aiData.estimatedValueLow.toLocaleString()} - $${aiData.estimatedValueHigh.toLocaleString()}`,
+          confidence: aiData.confidenceScore,
+          category: aiData.itemIdentification,
+          condition: aiData.conditionRating,
+          recommendations: aiData.recommendations,
+        });
+      }, 500);
+    } catch (error) {
+      clearInterval(progressInterval);
+      console.error('Analysis error:', error);
+      alert('Failed to analyze image. Please try again.');
+      reset();
+    }
   };
 
   const reset = () => {

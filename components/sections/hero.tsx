@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Upload, Camera, Send, Gem, Watch, Paintbrush, CheckCircle, AlertCircle } from 'lucide-react';
 
 export function Hero() {
+  const router = useRouter();
   const [inputValue, setInputValue] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -16,19 +18,22 @@ export function Hero() {
       icon: Camera,
       title: 'Take a photo to identify value',
       description: 'AI-powered image analysis for quick valuations',
-      color: 'bg-red-50 text-red-600'
+      color: 'bg-red-50 text-red-600',
+      onClick: () => router.push('/appraise/new')
     },
     {
       icon: Gem,
       title: 'Create a valuation report',
       description: 'Professional reports for insurance purposes',
-      color: 'bg-blue-50 text-blue-600'
+      color: 'bg-blue-50 text-blue-600',
+      onClick: () => router.push('/appraise/new')
     },
     {
       icon: Paintbrush,
       title: 'Valuation calculators',
       description: 'Specialized tools for different categories',
-      color: 'bg-purple-50 text-purple-600'
+      color: 'bg-purple-50 text-purple-600',
+      onClick: () => router.push('/appraise/new')
     }
   ];
 
@@ -202,7 +207,11 @@ export function Hero() {
           {/* Quick Actions */}
           <div className="grid gap-6 md:grid-cols-3 max-w-4xl mx-auto">
             {quickActions.map((action, index) => (
-              <Card key={index} className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 bg-white/80 backdrop-blur-sm">
+              <Card
+                key={index}
+                className="border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 bg-white/80 backdrop-blur-sm cursor-pointer"
+                onClick={action.onClick}
+              >
                 <CardContent className="p-6">
                   <div className={`inline-flex h-12 w-12 items-center justify-center rounded-lg ${action.color} mb-4`}>
                     <action.icon className="h-6 w-6" />

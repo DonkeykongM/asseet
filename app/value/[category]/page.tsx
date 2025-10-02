@@ -1,5 +1,6 @@
 import { categories } from '@/lib/data';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -46,10 +47,12 @@ export default function CategoryPage({ params }: Props) {
                   Average value: {category.averageValue}
                 </Badge>
               </div>
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
-                <Upload className="mr-2 h-5 w-5" />
-                Start Valuation
-              </Button>
+              <Link href="/appraise/new">
+                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+                  <Upload className="mr-2 h-5 w-5" />
+                  Start Valuation
+                </Button>
+              </Link>
             </div>
             <div className="relative h-96 rounded-lg overflow-hidden">
               <Image
