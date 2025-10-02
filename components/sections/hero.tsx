@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, Upload, Camera, Send, Gem, Watch, Paintbrush, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowRight, Upload, Camera, Send, Gem, Watch, Paintbrush, CircleCheck as CheckCircle, CircleAlert as AlertCircle } from 'lucide-react';
 
 export function Hero() {
   const router = useRouter();

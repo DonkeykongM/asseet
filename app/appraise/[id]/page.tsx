@@ -9,17 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Separator } from '@/components/ui/separator';
-import {
-  CheckCircle,
-  AlertCircle,
-  DollarSign,
-  TrendingUp,
-  Shield,
-  FileText,
-  Calendar,
-  Tag,
-  ChevronLeft,
-} from 'lucide-react';
+import { CircleCheck as CheckCircle, CircleAlert as AlertCircle, DollarSign, TrendingUp, Shield, FileText, Calendar, Tag, ChevronLeft } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import { getImageUrl } from '@/lib/supabase/storage';
 

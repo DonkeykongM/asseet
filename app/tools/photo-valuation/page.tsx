@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { Upload, Camera, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, Camera, CircleCheck as CheckCircle, CircleAlert as AlertCircle } from 'lucide-react';
 
 type Step = 'upload' | 'analyzing' | 'results';
 
