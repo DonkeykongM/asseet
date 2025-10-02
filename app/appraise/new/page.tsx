@@ -1,33 +1,106 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/lib/auth/context';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ImageUpload } from '@/components/appraisal/image-upload';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { categories } from '@/lib/data';
 import { supabase } from '@/lib/supabase/client';
 import { uploadAppraisalImage } from '@/lib/supabase/storage';
 
 export default function NewAppraisal() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [images, setImages] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [usageData, setUsageData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/auth/login?redirect=/appraise/new');
+      return;
+    }
+
+    if (user) {
+      checkUsageLimits();
+    }
+  }, [user, authLoading, router]);
+
+  const checkUsageLimits = async () => {
+    if (!user) return;
+
+    try {
+      const [usageRes, creditsRes] = await Promise.all([
+        supabase
+          .from('usage_tracking')
+          .select('*')
+          .eq('user_id', user.id)
+          .gte('period_end', new Date().toISOString())
+          .maybeSingle(),
+        supabase
+          .from('appraisal_credits')
+          .select('credits_remaining')
+          .eq('user_id', user.id)
+          .gt('credits_remaining', 0),
+      ]);
+
+      const usage = usageRes.data;
+      const totalCredits = creditsRes.data?.reduce(
+        (sum: number, item: any) => sum + item.credits_remaining,
+        0
+      ) || 0;
+
+      if (usage) {
+        const hasUnlimited = usage.appraisals_limit === -1;
+        const hasRemainingAllowance = usage.appraisals_used < usage.appraisals_limit;
+        const hasCredits = totalCredits > 0;
+
+        if (!hasUnlimited && !hasRemainingAllowance && !hasCredits) {
+          setError('You have reached your appraisal limit for this period. Please upgrade your plan or purchase additional credits.');
+        }
+
+        setUsageData({ ...usage, totalCredits });
+      }
+    } catch (err) {
+      console.error('Error checking usage limits:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
+    if (!user) {
+      setError('You must be logged in to create an appraisal');
+      return;
+    }
+
     if (!category || !description || images.length === 0) {
       setError('Please provide category, description, and at least one image');
       return;
+    }
+
+    if (usageData) {
+      const hasUnlimited = usageData.appraisals_limit === -1;
+      const hasRemainingAllowance = usageData.appraisals_used < usageData.appraisals_limit;
+      const hasCredits = usageData.totalCredits > 0;
+
+      if (!hasUnlimited && !hasRemainingAllowance && !hasCredits) {
+        setError('You have reached your appraisal limit. Please upgrade your plan or purchase additional credits.');
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -157,6 +230,21 @@ export default function NewAppraisal() {
     }
   };
 
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <LoadingSpinner size="lg" className="mx-auto mb-4" />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="py-16 sm:py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -231,7 +319,7 @@ export default function NewAppraisal() {
               <Button
                 type="submit"
                 disabled={isSubmitting || !category || !description || images.length === 0}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700"
+                className="flex-1 bg-gray-900 hover:bg-gray-800"
               >
                 {isSubmitting ? (
                   <>
