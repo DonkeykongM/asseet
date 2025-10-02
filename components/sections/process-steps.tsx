@@ -1,68 +1,80 @@
 'use client';
 
-import { processSteps } from '@/lib/data';
 import { Upload, Cpu, UserCheck } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 
-const iconMap = {
-  upload: Upload,
-  cpu: Cpu,
-  'user-check': UserCheck
-};
+const steps = [
+  {
+    id: 1,
+    title: 'Upload & Describe',
+    description: 'Take clear photos from multiple angles and provide item details',
+    icon: Upload,
+    details: ['High-quality images', 'Detailed description', 'Condition notes', 'History & provenance']
+  },
+  {
+    id: 2,
+    title: 'AI Analysis',
+    description: 'Our advanced AI analyzes your item against market data',
+    icon: Cpu,
+    details: ['Image recognition', 'Market comparables', 'Trend analysis', 'Value estimation']
+  },
+  {
+    id: 3,
+    title: 'Get Results',
+    description: 'Receive a comprehensive appraisal report in your account',
+    icon: UserCheck,
+    details: ['Instant results', 'Expert validation', 'PDF reports', 'Insurance docs']
+  }
+];
 
 export function ProcessSteps() {
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-24 sm:py-32 bg-gray-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold text-gray-900 sm:text-5xl mb-4">
             How It Works
           </h2>
-          <p className="mt-4 text-lg text-gray-600">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Get professional valuations in three simple steps
           </p>
         </div>
 
-        <div className="mt-12 grid gap-8 md:grid-cols-3">
-          {processSteps.map((step, index) => {
-            const Icon = iconMap[step.icon as keyof typeof iconMap];
+        <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
+          {steps.map((step, index) => {
+            const Icon = step.icon;
             return (
-              <Card key={step.id} className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardContent className="p-8">
-                  {/* Step Number */}
-                  <div className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">
-                    {index + 1}
+              <div key={step.id} className="relative">
+                <div className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow border border-gray-100">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gray-900">
+                      <Icon className="h-7 w-7 text-white" />
+                    </div>
+                    <span className="text-5xl font-bold text-gray-100">
+                      {step.id}
+                    </span>
                   </div>
 
-                  {/* Icon */}
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 mb-6">
-                    <Icon className="h-6 w-6 text-white" />
-                  </div>
-
-                  {/* Content */}
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">
                     {step.title}
                   </h3>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-gray-600 mb-6">
                     {step.description}
                   </p>
 
-                  {/* Details */}
                   <ul className="space-y-2">
                     {step.details.map((detail, detailIndex) => (
                       <li key={detailIndex} className="flex items-center text-sm text-gray-500">
-                        <div className="mr-2 h-1.5 w-1.5 rounded-full bg-blue-400"></div>
+                        <div className="mr-2 h-1.5 w-1.5 rounded-full bg-gray-400"></div>
                         {detail}
                       </li>
                     ))}
                   </ul>
-                </CardContent>
+                </div>
 
-                {/* Connecting Line */}
-                {index < processSteps.length - 1 && (
-                  <div className="absolute top-1/2 -right-4 hidden h-0.5 w-8 bg-gradient-to-r from-blue-200 to-blue-300 md:block"></div>
+                {index < steps.length - 1 && (
+                  <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gray-200"></div>
                 )}
-              </Card>
+              </div>
             );
           })}
         </div>
