@@ -12,16 +12,7 @@ import { Progress } from '@/components/ui/progress';
 import { useAuth } from '@/lib/auth/context';
 import { supabase } from '@/lib/supabase/client';
 import { getImageUrl } from '@/lib/supabase/storage';
-import {
-  FileText,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  Plus,
-  TrendingUp,
-  Calendar,
-  CreditCard,
-} from 'lucide-react';
+import { FileText, Clock, CircleCheck as CheckCircle, CircleAlert as AlertCircle, Plus, TrendingUp, Calendar, CreditCard } from 'lucide-react';
 
 type Appraisal = any;
 type Profile = any;

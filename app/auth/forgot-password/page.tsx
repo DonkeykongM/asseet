@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { useAuth } from '@/lib/auth/context';
-import { AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react';
+import { CircleAlert as AlertCircle, CircleCheck as CheckCircle, ArrowLeft } from 'lucide-react';
 
 export default function ForgotPasswordPage() {
   const { resetPassword } = useAuth();
